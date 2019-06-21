@@ -5,9 +5,8 @@ namespace app\storage;
 use Predis\Client;
 
 use app\AbstractStorage;
-use app\StorageInterface;
 
-class Redis extends AbstractStorage implements StorageInterface
+class Redis extends AbstractStorage
 {
     protected function setConnection(): void
     {

@@ -3,8 +3,9 @@
 namespace app\model;
 
 use app\Storage;
+use app\interfaces\ProductStorageInterface;
 
-class Product
+class Product implements ProductStorageInterface
 {
     private $storage;
 
@@ -17,5 +18,4 @@ class Product
     {
         return $this->storage->getAllProducts();
     }
-
 }

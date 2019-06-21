@@ -3,8 +3,9 @@
 namespace app\model;
 
 use app\Storage;
+use app\interfaces\WishlistStorageInterface;
 
-class Wishlist
+class Wishlist implements WishlistStorageInterface
 {
     private $storage;
 
@@ -26,5 +27,10 @@ class Wishlist
     public function removeFromWishlist(int $id): bool
     {
         return $this->storage->removeFromWishlist($id);
+    }
+
+    public function checkInWishlist(int $productId): bool
+    {
+        return $this->storage->checkInWishlist($productId);
     }
 }

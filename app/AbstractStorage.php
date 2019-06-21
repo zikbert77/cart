@@ -3,8 +3,11 @@
 namespace app;
 
 use PDO;
+use app\interfaces\CartStorageInterface;
+use app\interfaces\ProductStorageInterface;
+use app\interfaces\WishlistStorageInterface;
 
-abstract  class AbstractStorage
+abstract class AbstractStorage implements ProductStorageInterface, CartStorageInterface, WishlistStorageInterface
 {
     /** @var \PDO|\Predis\Client */
     protected $connection;

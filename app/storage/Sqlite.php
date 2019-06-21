@@ -4,9 +4,8 @@ namespace app\storage;
 
 use PDO;
 use app\AbstractStorage;
-use app\StorageInterface;
 
-class Sqlite extends AbstractStorage implements StorageInterface
+class Sqlite extends AbstractStorage
 {
     protected function setConnection(): void
     {

@@ -6,7 +6,7 @@ use Exception;
 
 class Storage
 {
-    /** @var StorageInterface|null $storage */
+    /** @var AbstractStorage|null $storage */
     private $storage = null;
 
     public function __construct()
@@ -20,7 +20,7 @@ class Storage
         }
     }
 
-    public function getStorage(): StorageInterface {
+    public function getStorage(): AbstractStorage {
         return $this->storage;
     }
 }

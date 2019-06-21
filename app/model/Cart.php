@@ -3,8 +3,9 @@
 namespace app\model;
 
 use app\Storage;
+use app\interfaces\CartStorageInterface;
 
-class Cart
+class Cart implements CartStorageInterface
 {
     private $storage;
 
@@ -36,5 +37,10 @@ class Cart
     public function getTotalInCartAmount(): float
     {
         return $this->storage->getTotalInCartAmount();
+    }
+
+    public function checkInCart(int $productId): bool
+    {
+        return $this->storage->checkInCart($productId);
     }
 }

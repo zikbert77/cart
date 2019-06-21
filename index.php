@@ -20,10 +20,9 @@ define('ROOT', str_replace('\\','/', dirname(__FILE__)));
  * Config file
  */
 require_once(ROOT . '/config.php');
-require_once(ROOT . '/helpers.php');
 
 /**
- * PSR-4 classes autoload
+ * PSR-4 autoloader
  */
 require_once(ROOT . '/vendor/autoload.php');
 
