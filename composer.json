@@ -1,0 +1,17 @@
+{
+    "name": "macbook/cart-task",
+    "authors": [
+        {
+            "name": "zikbert77",
+            "email": "zikbert77@gmail.com"
+        }
+    ],
+    "require": {
+        "predis/predis": "^1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "app\\": "app/"
+        }
+    }
+}
