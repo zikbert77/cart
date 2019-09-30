@@ -1,4 +1,7 @@
-#task:
+# run
+php -S http://127.0.0.1:8000
+
+# task
 
 Please, create implemnentation of Shopping Cart for our shop using vanilla PHP, that allows to:
 1. Add products
