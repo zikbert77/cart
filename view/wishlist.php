@@ -38,7 +38,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($inWishlist as $product): ?>
+                    <?php foreach ($inWishList as $product): ?>
                         <tr id="tr_<?= $product['id'] ?>">
                             <td>
                                 <?= $product['id'] ?>

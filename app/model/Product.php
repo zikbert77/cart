@@ -18,4 +18,9 @@ class Product implements ProductStorageInterface
     {
         return $this->storage->getAllProducts();
     }
+
+    public function getProductById(int $productId): array
+    {
+        return $this->storage->getProductById($productId);
+    }
 }

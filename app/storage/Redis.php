@@ -14,6 +14,36 @@ class Redis extends AbstractStorage
         $this->connection = $redis;
     }
 
+    public function getAllProducts(): array
+    {
+        $products = $this->connection->get('products');
+        if (!empty($products)) {
+            $parsedProducts = json_decode($products, true);
+            if ($parsedProducts) {
+                return $parsedProducts;
+            }
+        }
+        
+        return [];
+    }
+
+    public function getProductById(int $productId): array
+    {
+        $product = [];
+        $products = $this->connection->get('products');
+        if (!empty($products)) {
+            $parsedProducts = json_decode($products, true);
+            if ($parsedProducts) {
+                $productKey = array_search($productId, array_column($parsedProducts, 'id'));
+                if ($productKey !== false) {
+                    return $parsedProducts[$productKey];
+                }
+            }
+        }
+
+        return $product;
+    }
+
     public function getAllInCart(): array
     {
         $inCart = $this->connection->get('cart');
@@ -41,7 +71,6 @@ class Redis extends AbstractStorage
         $total = 0;
 
         $inCart = $this->getAllInCart();
-
         foreach ($inCart as $item) {
             $total += $item['price'] * $item['quantity'];
         }
@@ -52,12 +81,9 @@ class Redis extends AbstractStorage
     public function addToCart(int $productId, int $quantity): bool
     {
         $inCart = $this->getAllInCart();
-
         if ($this->checkInCart($productId)) {
-            //update
             $inCart[$this->getElementIndex($inCart, $productId)]['quantity'] += $quantity;
         } else {
-            //insert
             array_push($inCart, [
                 'product_id' => $productId,
                 'quantity' => $quantity,
@@ -72,16 +98,9 @@ class Redis extends AbstractStorage
     public function changeQuantity(int $productId, int $quantity): bool
     {
         $inCart = $this->getAllInCart();
-
-        dump($inCart);
-        dump($productId);
-        dump($this->getElementIndex($inCart, $productId));
-
         if ($this->checkInCart($productId)) {
             $inCart[$this->getElementIndex($inCart, $productId)]['quantity'] = $quantity;
         }
-
-        dump($inCart);
 
         $this->connection->set('cart', json_encode($inCart));
 
@@ -91,7 +110,6 @@ class Redis extends AbstractStorage
     public function removeFromCart(int $productId): bool
     {
         $inCart = $this->getAllInCart();
-
         if ($this->checkInCart($productId)) {
             unset($inCart[$this->getElementIndex($inCart, $productId)]);
         }
@@ -104,7 +122,6 @@ class Redis extends AbstractStorage
     public function checkInCart(int $productId): bool
     {
         $inCart = $this->getAllInCart();
-
         foreach ($inCart as $item) {
             if ($item['product_id'] == $productId) {
                 return true;
@@ -116,62 +133,59 @@ class Redis extends AbstractStorage
 
     public function getAllInWishlist(): array
     {
-        $inWishlist = $this->connection->get('wishlist');
-
-        $productsInWishlist = [];
+        $inWishList = $this->connection->get('wishlist');
+        $productsInWishList = [];
 
         $i = 0;
-        foreach (json_decode($inWishlist, true) ?? [] as $item) {
+        foreach (json_decode($inWishList, true) ?? [] as $item) {
             $product = $this->getProductById($item['product_id']);
 
-            $productsInWishlist[$i]['id'] = $i;
-            $productsInWishlist[$i]['product_id'] = $product['id'];
-            $productsInWishlist[$i]['title'] = $product['title'];
-            $productsInWishlist[$i]['price'] = $product['price'];
-            $productsInWishlist[$i]['image'] = $product['image'];
+            $productsInWishList[$i]['id'] = $i;
+            $productsInWishList[$i]['product_id'] = $product['id'];
+            $productsInWishList[$i]['title'] = $product['title'];
+            $productsInWishList[$i]['price'] = $product['price'];
+            $productsInWishList[$i]['image'] = $product['image'];
 
             $i++;
         }
 
-        return $productsInWishlist;
+        return $productsInWishList;
     }
 
     public function addToWishlist(int $productId): bool
     {
-        $inWishlist = $this->getAllInWishlist();
+        $inWishList = $this->getAllInWishlist();
 
         if ($this->checkInWishlist($productId)) {
             //do nothing
         } else {
             //insert
-            array_push($inWishlist, [
+            array_push($inWishList, [
                 'product_id' => $productId,
             ]);
         }
 
-        $this->connection->set('wishlist', json_encode($inWishlist));
+        $this->connection->set('wishlist', json_encode($inWishList));
 
         return true;
     }
 
     public function removeFromWishlist(int $productId): bool
     {
-        $inWishlist = $this->getAllInWishlist();
-
+        $inWishList = $this->getAllInWishlist();
         if ($this->checkInWishlist($productId)) {
-            unset($inWishlist[$this->getElementIndex($inWishlist, $productId)]);
+            unset($inWishList[$this->getElementIndex($inWishList, $productId)]);
         }
 
-        $this->connection->set('wishlist', json_encode($inWishlist));
+        $this->connection->set('wishlist', json_encode($inWishList));
 
         return true;
     }
 
     public function checkInWishlist(int $productId): bool
     {
-        $inWishlist = $this->getAllInWishlist();
-
-        foreach ($inWishlist as $item) {
+        $inWishList = $this->getAllInWishlist();
+        foreach ($inWishList as $item) {
             if ($item['product_id'] == $productId) {
                 return true;
             }

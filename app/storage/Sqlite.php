@@ -13,6 +13,42 @@ class Sqlite extends AbstractStorage
         $this->connection = $pdo;
     }
 
+    public function getAllProducts(): array
+    {
+        $products = [];
+
+        $i = 0;
+        foreach ($this->connection->query("SELECT * FROM products") as $row)
+        {
+            $products[$i]['id'] = $row['id'];
+            $products[$i]['title'] = $row['title'];
+            $products[$i]['price'] = $row['price'];
+            $products[$i]['image'] = $row['image'];
+            ++$i;
+        }
+
+        return $products;
+    }
+
+
+    public function getProductById(int $productId): array
+    {
+        $product = [];
+        $stmt = $this->connection->prepare("SELECT * FROM products WHERE id = ?");
+        $stmt->execute([$productId]);
+
+        $i = 0;
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $product[$i]['id'] = $row['id'];
+            $product[$i]['title'] = $row['title'];
+            $product[$i]['price'] = $row['price'];
+            $product[$i]['image'] = $row['image'];
+            ++$i;
+        }
+
+        return $product[0];
+    }
+
     //Cart
     public function getAllInCart(): array
     {
@@ -51,7 +87,6 @@ class Sqlite extends AbstractStorage
         $total = 0;
 
         $inCart = $this->getAllInCart();
-
         foreach ($inCart as $item) {
             $total += $item['price'] * $item['quantity'];
         }
@@ -62,14 +97,12 @@ class Sqlite extends AbstractStorage
     public function addToCart(int $productId, int $quantity): bool
     {
         if ($this->checkInCart($productId)) {
-            //update
             $stmt = $this->connection->prepare("UPDATE cart SET quantity = quantity + :quantity WHERE product_id = :product_id");
             $stmt->bindParam(':product_id', $productId);
             $stmt->bindParam(':quantity', $quantity);
 
             $stmt->execute();
         } else {
-            //insert
             $stmt = $this->connection->prepare("INSERT INTO cart (product_id, quantity) VALUES (:product_id, :quantity)");
             $stmt->bindParam(':product_id', $productId);
             $stmt->bindParam(':quantity', $quantity);
@@ -83,7 +116,6 @@ class Sqlite extends AbstractStorage
     public function changeQuantity(int $productId, int $quantity): bool
     {
         if ($this->checkInCart($productId)) {
-            //update
             $stmt = $this->connection->prepare("UPDATE cart SET quantity = :quantity WHERE product_id = :product_id");
             $stmt->bindParam(':product_id', $productId);
             $stmt->bindParam(':quantity', $quantity);
@@ -97,7 +129,6 @@ class Sqlite extends AbstractStorage
     public function removeFromCart(int $productId): bool
     {
         if ($this->checkInCart($productId)) {
-            //update
             $stmt = $this->connection->prepare("DELETE FROM cart WHERE product_id = :product_id");
             $stmt->bindParam(':product_id', $productId);
 
@@ -117,10 +148,10 @@ class Sqlite extends AbstractStorage
         return $stmt->fetchColumn() == 1;
     }
 
-    //Wishlist
+    //WishList
     public function getAllInWishlist(): array
     {
-        $productsInWishlist = [];
+        $productsInWishList = [];
 
         $query = $this->connection->prepare("
             SELECT 
@@ -137,15 +168,15 @@ class Sqlite extends AbstractStorage
 
         $i = 0;
         while($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $productsInWishlist[$i]['id'] = $row['id'];
-            $productsInWishlist[$i]['product_id'] = $row['product_id'];
-            $productsInWishlist[$i]['title'] = $row['title'];
-            $productsInWishlist[$i]['price'] = $row['price'];
-            $productsInWishlist[$i]['image'] = $row['image'];
+            $productsInWishList[$i]['id'] = $row['id'];
+            $productsInWishList[$i]['product_id'] = $row['product_id'];
+            $productsInWishList[$i]['title'] = $row['title'];
+            $productsInWishList[$i]['price'] = $row['price'];
+            $productsInWishList[$i]['image'] = $row['image'];
             ++$i;
         }
 
-        return $productsInWishlist;
+        return $productsInWishList;
     }
 
     public function addToWishlist(int $productId): bool
@@ -161,10 +192,10 @@ class Sqlite extends AbstractStorage
 
         return false;
     }
+
     public function removeFromWishlist(int $productId): bool
     {
         if ($this->checkInWishlist($productId)) {
-            //update
             $stmt = $this->connection->prepare("DELETE FROM wishlist WHERE product_id = :product_id");
             $stmt->bindParam(':product_id', $productId);
 

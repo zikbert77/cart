@@ -34,8 +34,8 @@ $products = $productModel->getAllProducts();
 $cartModel = new Cart($storage);
 $inCart = $cartModel->getAllInCart();
 
-$wishlistModel = new Wishlist($storage);
-$inWishlist = $wishlistModel->getAllInWishlist();
+$wishListModel = new Wishlist($storage);
+$inWishList = $wishListModel->getAllInWishlist();
 
 // Cart
 if (isset($_POST['addToCart'])) {
@@ -56,11 +56,11 @@ if (isset($_POST['getTotalAmount'])) {
 
 // Wishlist
 if (isset($_POST['addToWishlist'])) {
-    return $wishlistModel->addToWishlist($_POST['productId']);
+    return $wishListModel->addToWishlist($_POST['productId']);
 }
 
 if (isset($_POST['removeFromWishlist'])) {
-    return $wishlistModel->removeFromWishlist($_POST['productId']);
+    return $wishListModel->removeFromWishlist($_POST['productId']);
 }
 
 // Simple "routing"
