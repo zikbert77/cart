@@ -3,7 +3,6 @@ version: '3.7'
 services:
   nginx:
     image: nginx:alpine
-    container_name: cart-webserver
     working_dir: /app
     volumes:
       - ./../:/app
@@ -14,7 +13,11 @@ services:
       - "8889:80"
   php:
     build: ./php
-#    links:
-#      - mysql
     volumes:
       - ./../:/app
+  composer_installation:
+    container_name: composer_installation
+    image: composer
+    volumes:
+      - ./../:/app
+    command: composer install --ignore-platform-reqs
