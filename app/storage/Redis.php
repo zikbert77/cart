@@ -10,7 +10,7 @@ class Redis extends AbstractStorage
 {
     protected function setConnection(): void
     {
-        $redis = new Client();
+        $redis = new Client(['host' => 'redis']);
         $this->connection = $redis;
     }
 
