@@ -8,10 +8,35 @@ use app\AbstractStorage;
 
 class Redis extends AbstractStorage
 {
+    private function parseData(): bool
+    {
+        $redisData = file_get_contents(ROOT . '/data.csv');
+        if (!empty($redisData)) {
+            $i = 0;
+            $products = [];
+            $redisData = explode("\n", $redisData);
+            foreach ($redisData as $productInfo) {
+                list($title, $price, $img) = explode(',', $productInfo);
+                $products[] = [
+                    'id' => $i,
+                    'title' => $title,
+                    'price' => $price,
+                    'image' => $img
+                ];
+                $i++;
+            }
+
+            $this->connection->set('products', json_encode($products));
+        }
+
+        return true;
+    }
+
     protected function setConnection(): void
     {
-        $redis = new Client();
+        $redis = new Client(['host' => 'redis']);
         $this->connection = $redis;
+        $this->parseData();
     }
 
     public function getAllProducts(): array

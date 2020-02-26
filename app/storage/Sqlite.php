@@ -100,17 +100,13 @@ class Sqlite extends AbstractStorage
             $stmt = $this->connection->prepare("UPDATE cart SET quantity = quantity + :quantity WHERE product_id = :product_id");
             $stmt->bindParam(':product_id', $productId);
             $stmt->bindParam(':quantity', $quantity);
-
-            $stmt->execute();
         } else {
             $stmt = $this->connection->prepare("INSERT INTO cart (product_id, quantity) VALUES (:product_id, :quantity)");
             $stmt->bindParam(':product_id', $productId);
             $stmt->bindParam(':quantity', $quantity);
-
-            $stmt->execute();
         }
 
-        return false;
+        return $stmt->execute();
     }
 
     public function changeQuantity(int $productId, int $quantity): bool
@@ -120,7 +116,7 @@ class Sqlite extends AbstractStorage
             $stmt->bindParam(':product_id', $productId);
             $stmt->bindParam(':quantity', $quantity);
 
-            $stmt->execute();
+            return $stmt->execute();
         }
 
         return false;
@@ -132,7 +128,7 @@ class Sqlite extends AbstractStorage
             $stmt = $this->connection->prepare("DELETE FROM cart WHERE product_id = :product_id");
             $stmt->bindParam(':product_id', $productId);
 
-            $stmt->execute();
+            return $stmt->execute();
         }
 
         return false;
@@ -185,9 +181,7 @@ class Sqlite extends AbstractStorage
             $stmt = $this->connection->prepare("INSERT INTO wishlist (product_id) VALUES (:product_id)");
             $stmt->bindParam(':product_id', $productId);
 
-            $stmt->execute();
-
-            return true;
+            return $stmt->execute();
         }
 
         return false;
@@ -199,9 +193,7 @@ class Sqlite extends AbstractStorage
             $stmt = $this->connection->prepare("DELETE FROM wishlist WHERE product_id = :product_id");
             $stmt->bindParam(':product_id', $productId);
 
-            $stmt->execute();
-
-            return true;
+            return $stmt->execute();
         }
 
         return false;

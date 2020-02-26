@@ -1,5 +1,9 @@
 # run
+Without docker
 `php -S http://127.0.0.1:8000`
+
+With docker
+`cd docker && ./build.sh`
 
 # task
 
